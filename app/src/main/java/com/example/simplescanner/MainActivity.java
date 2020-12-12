@@ -10,6 +10,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,6 +45,25 @@ public class MainActivity extends AppCompatActivity {
     private File photoDirectory;
     private String currentPhotoPath;
     private int nextViewId;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Log.d(getClass().getSimpleName(), "Clicked in action bar on settings");
+            return true;
+        } else if (id == R.id.action_about) {
+            Log.d(getClass().getSimpleName(), "Clicked in action bar on about");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void dispatchSaveDocumentIntent() throws IOException {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
