@@ -22,18 +22,38 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.tom_roush.pdfbox.pdmodel.PDDocument;
+import com.tom_roush.pdfbox.pdmodel.PDPage;
+import com.tom_roush.pdfbox.pdmodel.PDPageContentStream;
+import com.tom_roush.pdfbox.pdmodel.common.PDRectangle;
+import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory;
+import com.tom_roush.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int EDIT_IMAGE = 2;
+    static final int SAVE_DOCUMENT = 3;
 
     private File photoDirectory;
     private String currentPhotoPath;
     private int nextViewId;
+
+    private void dispatchSaveDocumentIntent() throws IOException {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        intent.putExtra(Intent.EXTRA_TITLE, "scan.pdf");
+        // Optionally, specify a URI for the directory that should be opened in
+        // the system file picker when your app creates the document.
+        //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        startActivityForResult(intent, SAVE_DOCUMENT);
+    }
 
     private void dispatchPhotoIntent()  {
         Log.d(getClass().getSimpleName(), "Dispatch photo intent");
@@ -92,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(getClass().getSimpleName(), "Clicked button to save document");
                 try {
-                    Toast.makeText(MainActivity.this, "TODO: Save document", Toast.LENGTH_LONG).show();
+                    dispatchSaveDocumentIntent();
                 }
                 catch (Exception e) {
                     Log.d(getClass().getSimpleName(), "Failed to save document: " + e.getMessage());
@@ -114,8 +134,7 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout imageLayout = new RelativeLayout(this);
         gallery.addView(imageLayout);
 
-        // Attach the original filename to a dummy textview
-        // TODO: Make this a proper member variable of the layout
+        // TODO: Make the image path a proper member variable of the layout
         TextView photoPath = new TextView(this);
         photoPath.setText(currentPhotoPath);
         photoPath.setVisibility(View.GONE);
@@ -131,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(image);
         imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setPadding(50, 0, 50, 0); // TODO: Optimize the layout
+        imageView.setPadding(64, 4, 64, 4); // TODO: Optimize the layout
         imageLayout.addView(imageView);
 
         ImageButton editButton = new ImageButton(this);
@@ -173,15 +192,74 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void updateGallery(String imagePath) {
+        LinearLayout gallery = findViewById(R.id.gallery);
+        for (int i = 0; i < gallery.getChildCount(); i++) {
+            RelativeLayout imageLayout = (RelativeLayout) gallery.getChildAt(i);
+            TextView text = (TextView) imageLayout.getChildAt(0);
+            String path = text.getText().toString();
+            if (path.equals(imagePath)) {
+                Log.d(getClass().getSimpleName(), "Update view in gallery at position " + i);
+                ImageView imageView = (ImageView) imageLayout.getChildAt(1);
+                Bitmap image = Utils.getScaledImage(imagePath, getDisplayMetrics());
+                imageView.setImageBitmap(image);
+                return;
+            }
+        }
+        Log.w(getClass().getSimpleName(), "Failed to update gallery");
+    }
+
+    private void saveDocument(Uri uri) throws IOException {
+        PDFBoxResourceLoader.init(getApplicationContext());
+        PDDocument document = new PDDocument();
+
+        LinearLayout gallery = findViewById(R.id.gallery);
+        for (int i = 0; i < gallery.getChildCount(); i++) {
+            Log.d(getClass().getSimpleName(), "Process image at position " + i);
+
+            RelativeLayout layout = (RelativeLayout) gallery.getChildAt(i);
+            TextView text = (TextView) layout.getChildAt(0);
+            String path = text.getText().toString();
+            Bitmap image =  Utils.getImage(path);
+
+            PDRectangle pageSize = new PDRectangle(0, 0, 100, 100);
+            PDPage page = new PDPage(pageSize);
+            document.addPage(page);
+
+            PDPageContentStream stream = new PDPageContentStream(document, page);
+            PDImageXObject ximage = JPEGFactory.createFromImage(document, image, 0.9f);
+            stream.drawImage(ximage, 0, 0, pageSize.getWidth(), pageSize.getHeight());
+            stream.close();
+        }
+
+        OutputStream stream = getContentResolver().openOutputStream(uri);
+        document.save(stream);
+        document.close();
+        stream.close();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(getClass().getSimpleName(), "On activity result with request code " + requestCode + " and result code " + resultCode);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Log.d(getClass().getSimpleName(), "Handle on activity result of photo intent with file " + currentPhotoPath);
+            Log.d(getClass().getSimpleName(), "Handle on activity result of take photo intent with file " + currentPhotoPath);
             addGalleryEntry();
+        } else if (requestCode == EDIT_IMAGE && resultCode == RESULT_OK) {
+            String imagePath = data.getExtras().get("photoPath").toString();
+            Log.d(getClass().getSimpleName(), "Handle on activity result of edit photo intent with file " + imagePath);
+            updateGallery(imagePath);
+        } else if (requestCode == SAVE_DOCUMENT && resultCode == RESULT_OK) {
+            Log.d(getClass().getSimpleName(), "Handle on activity result of save document intent");
+            Uri uri = data.getData();
+            try {
+                saveDocument(uri);
+            } catch (IOException e) {
+                Log.w(getClass().getSimpleName(), "Failed to save document: " + e.getMessage());
+                Toast.makeText(MainActivity.this, "Failed to save document", Toast.LENGTH_LONG).show();
+            }
         } else {
-            Log.d(getClass().getSimpleName(), "On activity result could not be handled");
+            Log.w(getClass().getSimpleName(), "On activity result could not be handled");
         }
     }
 }

@@ -37,4 +37,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     api group: 'org.boofcv', name: 'boofcv-android', version: '0.36'
+    implementation 'com.tom_roush:pdfbox-android:1.8.10.1'
 }

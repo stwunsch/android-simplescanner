@@ -38,6 +38,14 @@
             android:layout_weight="1"
             android:text="Reset" />
 
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/button_margin"
+            android:layout_weight="1"
+            android:text="Save" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
