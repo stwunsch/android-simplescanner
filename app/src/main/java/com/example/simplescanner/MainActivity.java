@@ -69,6 +69,24 @@ public class MainActivity extends AppCompatActivity {
             Intent aboutIntent = new Intent(this, AboutActivity.class);
             startActivity(aboutIntent);
             return true;
+        } else if (id == R.id.action_save) {
+            Log.d(getClass().getSimpleName(), "Clicked button to save document");
+            LinearLayout gallery = findViewById(R.id.gallery);
+            if (gallery.getChildCount() == 0) {
+                Toast.makeText(MainActivity.this, "Nothing to save", Toast.LENGTH_LONG).show();
+                return true;
+            }
+            try {
+                dispatchSaveDocumentIntent();
+            }
+            catch (Exception e) {
+                Log.d(getClass().getSimpleName(), "Failed to save document: " + e.getMessage());
+                Toast.makeText(MainActivity.this, "Failed to save document", Toast.LENGTH_LONG).show();
+            }
+            return true;
+        } else if (id == R.id.action_reset) {
+            LinearLayout gallery = findViewById(R.id.gallery);
+            gallery.removeAllViews();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,26 +150,6 @@ public class MainActivity extends AppCompatActivity {
                 catch (Exception e) {
                     Log.d(getClass().getSimpleName(), "Failed to take photo: " + e.getMessage());
                     Toast.makeText(MainActivity.this, "Failed to take photo", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        FloatingActionButton fabSave = findViewById(R.id.fabSave);
-        fabSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(getClass().getSimpleName(), "Clicked button to save document");
-                LinearLayout gallery = findViewById(R.id.gallery);
-                if (gallery.getChildCount() == 0) {
-                    Toast.makeText(MainActivity.this, "Nothing to save", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                try {
-                    dispatchSaveDocumentIntent();
-                }
-                catch (Exception e) {
-                    Log.d(getClass().getSimpleName(), "Failed to save document: " + e.getMessage());
-                    Toast.makeText(MainActivity.this, "Failed to save document", Toast.LENGTH_LONG).show();
                 }
             }
         });
