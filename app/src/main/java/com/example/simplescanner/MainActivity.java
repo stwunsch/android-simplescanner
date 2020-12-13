@@ -187,14 +187,16 @@ public class MainActivity extends AppCompatActivity {
         ImageButton editButton = new ImageButton(this);
         editButton.setId(nextViewId++);
         RelativeLayout.LayoutParams paramsEditButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        paramsEditButton.rightMargin = 32;
+        paramsEditButton.rightMargin = (int) getResources().getDimension(R.dimen.image_button_margin);
         paramsEditButton.topMargin = paramsEditButton.rightMargin;
-        paramsEditButton.height = 160;
+        paramsEditButton.bottomMargin = paramsEditButton.rightMargin;
+        paramsEditButton.height = (int) getResources().getDimension(R.dimen.image_button_size);
         paramsEditButton.width = paramsEditButton.height;
         paramsEditButton.addRule(RelativeLayout.ALIGN_RIGHT, imageView.getId());
         editButton.setLayoutParams(paramsEditButton);
         imageLayout.addView(editButton);
         editButton.setImageResource(R.drawable.ic_action_crop);
+        editButton.setBackground(getResources().getDrawable(R.drawable.button_background));
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,17 +209,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton removeButton = new ImageButton(this);
+        ImageButton deleteButton = new ImageButton(this);
         RelativeLayout.LayoutParams paramsDeleteButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         paramsDeleteButton.addRule(RelativeLayout.BELOW, editButton.getId());
         paramsDeleteButton.addRule(RelativeLayout.ALIGN_START, editButton.getId());
         paramsDeleteButton.height = paramsEditButton.height;
         paramsDeleteButton.width = paramsDeleteButton.height;
-        removeButton.setLayoutParams(paramsDeleteButton);
-        imageLayout.addView(removeButton);
-        removeButton.setImageResource(R.drawable.ic_action_delete);
+        deleteButton.setLayoutParams(paramsDeleteButton);
+        imageLayout.addView(deleteButton);
+        deleteButton.setImageResource(R.drawable.ic_action_delete);
+        deleteButton.setBackground(getResources().getDrawable(R.drawable.button_background));
 
-        removeButton.setOnClickListener(new View.OnClickListener() {
+        deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d(getClass().getSimpleName(), "Remove from gallery the image " + currentPhotoPath);
@@ -330,13 +333,21 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = data.getData();
             try {
                 saveDocument(uri);
+                Log.d(getClass().getSimpleName(), "Saved document to " + uri.getPath());
+                String[] fullPath = uri.getPath().split(":");
+                String path = "";
+                if (fullPath.length == 2) {
+                    path = " to " + fullPath[1];
+                }
+                Log.d(getClass().getSimpleName(), "Saved document" + path);
+                Toast.makeText(MainActivity.this, "Saved document" + path, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 Log.w(getClass().getSimpleName(), "Failed to save document: " + e.getMessage());
                 Toast.makeText(MainActivity.this, "Failed to save document", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
-            Log.w(getClass().getSimpleName(), "Failed to get preferences: " + e.getMessage());
-            Toast.makeText(MainActivity.this, "Invalid preferences", Toast.LENGTH_LONG).show();
-        }
+                Log.w(getClass().getSimpleName(), "Failed to get preferences: " + e.getMessage());
+                Toast.makeText(MainActivity.this, "Invalid preferences", Toast.LENGTH_LONG).show();
+            }
         } else {
             Log.w(getClass().getSimpleName(), "On activity result could not be handled");
         }
