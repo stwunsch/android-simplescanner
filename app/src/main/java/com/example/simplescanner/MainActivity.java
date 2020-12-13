@@ -265,6 +265,12 @@ public class MainActivity extends AppCompatActivity {
             throw new InvalidPreferencesFormatException("Failed to read preferences page_resize_mode");
         }
 
+        String imageCompressionFactorStr = prefs.getString("image_compression_factor", null);
+        if (imageCompressionFactorStr == null) {
+            throw new InvalidPreferencesFormatException("Failed to read preferences image_compression_factor");
+        }
+        float imageCompressionFactor = Float.parseFloat(imageCompressionFactorStr.trim());
+
         LinearLayout gallery = findViewById(R.id.gallery);
         for (int i = 0; i < gallery.getChildCount(); i++) {
             Log.d(getClass().getSimpleName(), "Process image at position " + i);
@@ -293,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
             document.addPage(page);
 
             PDPageContentStream stream = new PDPageContentStream(document, page);
-            PDImageXObject ximage = JPEGFactory.createFromImage(document, image, 0.9f);
+            PDImageXObject ximage = JPEGFactory.createFromImage(document, image, imageCompressionFactor);
             stream.drawImage(ximage, 0, 0, pageSize.getWidth(), pageSize.getHeight());
             stream.close();
         }

@@ -93,7 +93,7 @@ public class Utils {
             throw new IOException("Failed to create new file " + path);
         }
         FileOutputStream fileOut = new FileOutputStream(file);
-        image.compress(Bitmap.CompressFormat.JPEG, 90, fileOut);
+        image.compress(Bitmap.CompressFormat.JPEG, 100, fileOut);
         fileOut.flush();
         fileOut.close();
     }

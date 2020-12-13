@@ -30,4 +30,14 @@
             android:persistent="true"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            android:key="image_compression_factor"
+            android:title="Image compression factor"
+            android:inputType="number"
+            android:persistent="true"
+            android:dialogTitle="Set JPEG image compression factor"
+            android:dialogMessage="Value between 0 and 1"
+            android:defaultValue="0.9"
+            app:useSimpleSummaryProvider="true" />
+
 </PreferenceScreen>
