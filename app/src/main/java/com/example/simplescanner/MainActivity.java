@@ -1,6 +1,7 @@
 package com.example.simplescanner;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tom_roush.pdfbox.pdmodel.PDDocument;
@@ -33,12 +35,14 @@ import com.tom_roush.pdfbox.util.PDFBoxResourceLoader;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.prefs.InvalidPreferencesFormatException;
 
 public class MainActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int EDIT_IMAGE = 2;
     static final int SAVE_DOCUMENT = 3;
+    static final float INCH_PER_MM = 0.0393701f;
 
     private File photoDirectory;
     private String currentPhotoPath;
@@ -113,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         photoDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         nextViewId = 1000;
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
 
         FloatingActionButton fabCamera = findViewById(R.id.fabCamera);
         fabCamera.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout gallery = findViewById(R.id.gallery);
         RelativeLayout imageLayout = new RelativeLayout(this);
         gallery.addView(imageLayout);
-        imageLayout.setPadding(0, 4, 0, 4);
 
         // TODO: Make the image path a proper member variable of the layout
         TextView photoPath = new TextView(this);
@@ -237,9 +241,29 @@ public class MainActivity extends AppCompatActivity {
         Log.w(getClass().getSimpleName(), "Failed to update gallery");
     }
 
-    private void saveDocument(Uri uri) throws IOException {
+    private void saveDocument(Uri uri) throws IOException, InvalidPreferencesFormatException, NumberFormatException {
         PDFBoxResourceLoader.init(getApplicationContext());
         PDDocument document = new PDDocument();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String pageWidthStr = prefs.getString("page_width", null);
+        String pageHeightStr = prefs.getString("page_height", null);
+        if (pageWidthStr == null || pageHeightStr == null) {
+            throw new InvalidPreferencesFormatException("Failed to read preferences page_width and page_height");
+        }
+        int pageWidth = Integer.parseInt(pageWidthStr);
+        int pageHeight = Integer.parseInt(pageHeightStr);
+        Log.d(getClass().getSimpleName(), "Load page size from prefs " + pageWidth + ", " + pageHeight);
+        if (pageWidth <= 0 || pageHeight <= 0) {
+            throw new InvalidPreferencesFormatException("Invalid number for preference page_width or page_height");
+        }
+        float pageWidthInch = pageWidth / INCH_PER_MM / 72.f;
+        float pageHeightInch = pageHeight / INCH_PER_MM / 72.f;
+
+        String pageResizeMode = prefs.getString("page_resize_mode", null);
+        if (pageResizeMode == null) {
+            throw new InvalidPreferencesFormatException("Failed to read preferences page_resize_mode");
+        }
 
         LinearLayout gallery = findViewById(R.id.gallery);
         for (int i = 0; i < gallery.getChildCount(); i++) {
@@ -249,8 +273,22 @@ public class MainActivity extends AppCompatActivity {
             TextView text = (TextView) layout.getChildAt(0);
             String path = text.getText().toString();
             Bitmap image =  Utils.getImage(path);
+            float imageHeight = (float) image.getHeight();
+            float imageWidth = (float) image.getWidth();
 
-            PDRectangle pageSize = new PDRectangle(0, 0, 100, 100);
+            float pageWidthFinal = pageWidthInch;
+            float pageHeightFinal = pageHeightInch;
+            if (pageResizeMode.equals("fit_width")) {
+                Log.d(getClass().getSimpleName(), "Resize page width to content");
+                pageWidthFinal = pageHeightInch * imageWidth / imageHeight;
+            } else if (pageResizeMode.equals("fit_height")) {
+                Log.d(getClass().getSimpleName(), "Resize page height to content");
+                pageHeightFinal = pageWidthInch * imageHeight / imageWidth;
+            } else {
+                Log.d(getClass().getSimpleName(), "Resize content to page");
+            }
+
+            PDRectangle pageSize = new PDRectangle(0, 0, pageWidthFinal, pageHeightFinal);
             PDPage page = new PDPage(pageSize);
             document.addPage(page);
 
@@ -264,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
         document.save(stream);
         document.close();
         stream.close();
+        Log.d(getClass().getSimpleName(), "Saved document");
     }
 
     @Override
@@ -285,7 +324,10 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.w(getClass().getSimpleName(), "Failed to save document: " + e.getMessage());
                 Toast.makeText(MainActivity.this, "Failed to save document", Toast.LENGTH_LONG).show();
-            }
+            } catch (Exception e) {
+            Log.w(getClass().getSimpleName(), "Failed to get preferences: " + e.getMessage());
+            Toast.makeText(MainActivity.this, "Invalid preferences", Toast.LENGTH_LONG).show();
+        }
         } else {
             Log.w(getClass().getSimpleName(), "On activity result could not be handled");
         }

@@ -1,16 +1,33 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+                  xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <EditTextPreference
+            android:key="page_width"
+            android:title="Page width"
+            android:inputType="number"
+            android:persistent="true"
+            android:dialogTitle="Set page width"
+            android:dialogMessage="Size in millimeter (mm)"
+            android:defaultValue="210"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            android:key="page_height"
+            android:title="Page height"
+            android:inputType="number"
+            android:persistent="true"
+            android:dialogTitle="Set page width"
+            android:dialogMessage="Size in millimeter (mm)"
+            android:defaultValue="297"
+            app:useSimpleSummaryProvider="true"/>
 
         <ListPreference
-            app:defaultValue="A4"
-            app:entries="@array/page_size_values"
-            app:entryValues="@array/page_size_values"
-            app:key="page_size"
-            app:title="Page size"
+            app:defaultValue="fit_height"
+            app:entries="@array/page_resize_entries"
+            app:entryValues="@array/page_resize_values"
+            app:key="page_resize_mode"
+            app:title="Automatic resizing"
+            android:persistent="true"
             app:useSimpleSummaryProvider="true" />
-
-        <SwitchPreferenceCompat
-            app:key="reduce_page_height"
-            app:defaultValue="true"
-            app:title="Reduce page height to content" />
 
 </PreferenceScreen>
