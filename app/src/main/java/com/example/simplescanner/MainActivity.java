@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -185,14 +187,16 @@ public class MainActivity extends AppCompatActivity {
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageLayout.addView(imageView);
 
-        FloatingActionButton editButton = new FloatingActionButton(this);
+        ImageButton editButton = new ImageButton(this);
         editButton.setId(nextViewId++);
         RelativeLayout.LayoutParams paramsEditButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        paramsEditButton.addRule(RelativeLayout.ALIGN_LEFT, imageView.getId());
+        paramsEditButton.rightMargin = 32;
+        paramsEditButton.topMargin = 32;
+        paramsEditButton.addRule(RelativeLayout.ALIGN_RIGHT, imageView.getId());
         editButton.setLayoutParams(paramsEditButton);
         imageLayout.addView(editButton);
         editButton.setImageResource(android.R.drawable.ic_menu_crop);
-        editButton.setSize(FloatingActionButton.SIZE_MINI);
+        editButton.setBackgroundColor(Color.TRANSPARENT);
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,14 +209,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton removeButton = new FloatingActionButton(this);
+        ImageButton removeButton = new ImageButton(this);
         RelativeLayout.LayoutParams paramsDeleteButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         paramsDeleteButton.addRule(RelativeLayout.BELOW, editButton.getId());
         paramsDeleteButton.addRule(RelativeLayout.ALIGN_START, editButton.getId());
         removeButton.setLayoutParams(paramsDeleteButton);
         imageLayout.addView(removeButton);
         removeButton.setImageResource(android.R.drawable.ic_menu_delete);
-        removeButton.setSize(FloatingActionButton.SIZE_MINI);
+        removeButton.setBackgroundColor(Color.TRANSPARENT);
 
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
