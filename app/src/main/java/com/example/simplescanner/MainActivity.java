@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/pdf");
-        intent.putExtra(Intent.EXTRA_TITLE, "scan.pdf");
+        String filename = Utils.getFilename("scan");
+        intent.putExtra(Intent.EXTRA_TITLE, filename + ".pdf");
         // Optionally, specify a URI for the directory that should be opened in
         // the system file picker when your app creates the document.
         //intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);

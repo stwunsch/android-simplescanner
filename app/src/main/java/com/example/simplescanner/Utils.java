@@ -97,4 +97,9 @@ public class Utils {
         fileOut.flush();
         fileOut.close();
     }
+
+    static public String getFilename(String prefix) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        return prefix + "_" + timeStamp;
+    }
 }
