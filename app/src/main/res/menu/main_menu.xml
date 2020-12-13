@@ -7,11 +7,11 @@
         android:id="@+id/action_save"
         android:title="Save document"
         app:showAsAction="always"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_action_save"
         />
       <item
           android:id="@+id/action_settings"
-          android:orderInCategory="100"
+          android:orderInCategory="101"
           android:title="Settings"
           app:showAsAction="never" />
     <item
@@ -21,7 +21,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_reset"
-        android:orderInCategory="101"
-        android:title="Reset"
+        android:orderInCategory="100"
+        android:title="Reset document"
         app:showAsAction="never" />
 </menu>
