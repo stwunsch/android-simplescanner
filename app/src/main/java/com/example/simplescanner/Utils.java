@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,21 +49,37 @@ public class Utils {
         return BitmapFactory.decodeFile(filepath, bmOptions);
     }
 
-    static public Bitmap getCroppedImage(Bitmap image, List<Point> points) throws Exception {
+    static public double getDistance(Point a, Point b) {
+        return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+    }
+
+    static public Point getPointCoordinatesInImage(Point p, ImageView view, Bitmap image) {
+        int inputHeight = view.getMeasuredHeight();
+        int inputWidth = view.getMeasuredWidth();
+        int outputHeight = image.getHeight();
+        int outputWidth = image.getWidth();
+        int x = (int) (p.x / (float) inputWidth * outputWidth);
+        int y = (int) (p.y / (float) inputHeight * outputHeight);
+        return new Point(x, y);
+    }
+
+    static public Bitmap getCroppedImage(Bitmap image, List<Point> points, ImageView view) throws Exception {
         Planar<GrayU8> color = ConvertBitmap.bitmapToPlanar(image, null, GrayU8.class, null);
-        RemovePerspectiveDistortion removePerspective = new RemovePerspectiveDistortion(color.width, color.height, ImageType.pl(3, GrayU8.class));
-        Point topLeft = points.get(0);
-        Point topRight = points.get(1);
-        Point bottomRight = points.get(2);
-        Point bottomLeft = points.get(3);
+        Point topLeft = getPointCoordinatesInImage(points.get(0), view, image);
+        Point topRight = getPointCoordinatesInImage(points.get(1), view, image);
+        Point bottomRight = getPointCoordinatesInImage(points.get(2), view, image);
+        Point bottomLeft = getPointCoordinatesInImage(points.get(3), view, image);
+        double outputWidth = Math.max(getDistance(topLeft, topRight), getDistance(bottomLeft, bottomRight));
+        double outputHeight = Math.max(getDistance(topLeft, bottomLeft), getDistance(topRight, bottomRight));
+        RemovePerspectiveDistortion removePerspective = new RemovePerspectiveDistortion((int)outputWidth, (int)outputHeight, ImageType.pl(3, GrayU8.class));
         if(!removePerspective.apply(color,
                 new Point2D_F64(topLeft.x, topLeft.y), new Point2D_F64(topRight.x, topRight.y),
                 new Point2D_F64(bottomRight.x, bottomRight.y), new Point2D_F64(bottomLeft.x, bottomLeft.y)))
         {
-            throw new Exception();
+            throw new Exception("Failed to correct perspective");
         }
         Planar<GrayU8> output = (Planar<GrayU8>) removePerspective.getOutput();
-        Bitmap editedImage = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());
+        Bitmap editedImage = Bitmap.createBitmap(output.getWidth(), output.getHeight(), image.getConfig());
         ConvertBitmap.planarToBitmap(output, editedImage, null);
         return editedImage;
     }

@@ -123,11 +123,13 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
         float x = event.getX();
         float y = event.getY();
         if (action == MotionEvent.ACTION_DOWN) {
+            Log.d(getClass().getSimpleName(), "Touched down at " + x + ", " + y);
             findClosestPoint(x, y);
             updateClosestPoint(x, y);
         } else if (action == MotionEvent.ACTION_MOVE) {
             updateClosestPoint(x, y);
         } else if (action == MotionEvent.ACTION_UP) {
+            Log.d(getClass().getSimpleName(), "Released touch at " + x + ", " + y);
             closestPoint = -1;
         }
         return true;

@@ -161,24 +161,24 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout gallery = findViewById(R.id.gallery);
         RelativeLayout imageLayout = new RelativeLayout(this);
         gallery.addView(imageLayout);
+        imageLayout.setPadding(0, 4, 0, 4);
 
         // TODO: Make the image path a proper member variable of the layout
         TextView photoPath = new TextView(this);
         photoPath.setText(currentPhotoPath);
         photoPath.setVisibility(View.GONE);
         imageLayout.addView(photoPath);
-        imageLayout.setPadding(4, 4, 4, 4);
 
         ImageView imageView = new ImageView(this);
         imageView.setId(nextViewId++);
-        RelativeLayout.LayoutParams paramsImageView = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams paramsImageView = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         paramsImageView.addRule(RelativeLayout.CENTER_HORIZONTAL);
         imageView.setLayoutParams(paramsImageView);
         DisplayMetrics display = getDisplayMetrics();
         Bitmap image = Utils.getScaledImage(currentPhotoPath, display);
         imageView.setImageBitmap(image);
         imageView.setAdjustViewBounds(true);
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageLayout.addView(imageView);
 
         FloatingActionButton editButton = new FloatingActionButton(this);

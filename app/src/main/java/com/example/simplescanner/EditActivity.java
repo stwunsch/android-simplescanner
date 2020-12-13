@@ -50,7 +50,7 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 List<Point> points = previewView.getPoints();
                 try {
-                    editedImage = Utils.getCroppedImage(editedImage, points);
+                    editedImage = Utils.getCroppedImage(editedImage, points, previewView);
                 } catch (Exception e) {
                     Toast.makeText(EditActivity.this, "Failed to crop image", Toast.LENGTH_LONG).show();
                 }

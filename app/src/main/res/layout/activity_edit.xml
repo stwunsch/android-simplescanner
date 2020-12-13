@@ -6,21 +6,32 @@
     android:layout_height="match_parent"
     tools:context=".EditActivity">
 
-    <com.example.simplescanner.BoxImageView
-        android:id="@+id/previewView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/previewLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:foregroundGravity="center" />
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/buttonView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.example.simplescanner.BoxImageView
+            android:id="@+id/previewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="46dp">
 
         <Button
             android:id="@+id/buttonCrop"
