@@ -36,7 +36,7 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
     private void initMembers() {
         paintLine = new Paint();
         paintLine.setDither(true);
-        paintLine.setColor(0xFFFF0000);
+        paintLine.setColor(0xFFD50000);
         paintLine.setStyle(Paint.Style.STROKE);
         paintLine.setStrokeJoin(Paint.Join.ROUND);
         paintLine.setStrokeCap(Paint.Cap.ROUND);
