@@ -1,0 +1,9 @@
+<resources>
+    <string-array name="page_size_entries">
+        <item>A4</item>
+    </string-array>
+
+    <string-array name="page_size_values">
+        <item>A4</item>
+    </string-array>
+</resources>

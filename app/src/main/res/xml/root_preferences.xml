@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <ListPreference
+            app:defaultValue="A4"
+            app:entries="@array/page_size_values"
+            app:entryValues="@array/page_size_values"
+            app:key="page_size"
+            app:title="Page size"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="reduce_page_height"
+            app:defaultValue="true"
+            app:title="Reduce page height to content" />
+
+</PreferenceScreen>

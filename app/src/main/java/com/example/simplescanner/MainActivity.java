@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Log.d(getClass().getSimpleName(), "Clicked in action bar on settings");
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         } else if (id == R.id.action_about) {
             Log.d(getClass().getSimpleName(), "Clicked in action bar on about");
