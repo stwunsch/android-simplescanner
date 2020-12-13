@@ -3,7 +3,6 @@ package com.example.simplescanner;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -169,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         photoPath.setText(currentPhotoPath);
         photoPath.setVisibility(View.GONE);
         imageLayout.addView(photoPath);
+        imageLayout.setPadding(4, 4, 4, 4);
 
         ImageView imageView = new ImageView(this);
         imageView.setId(nextViewId++);
@@ -180,17 +179,16 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(image);
         imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setPadding(64, 4, 64, 4); // TODO: Optimize the layout
         imageLayout.addView(imageView);
 
-        ImageButton editButton = new ImageButton(this);
+        FloatingActionButton editButton = new FloatingActionButton(this);
         editButton.setId(nextViewId++);
         RelativeLayout.LayoutParams paramsEditButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        paramsEditButton.addRule(RelativeLayout.RIGHT_OF, imageView.getId());
+        paramsEditButton.addRule(RelativeLayout.ALIGN_LEFT, imageView.getId());
         editButton.setLayoutParams(paramsEditButton);
         imageLayout.addView(editButton);
         editButton.setImageResource(android.R.drawable.ic_menu_crop);
-        editButton.setBackgroundColor(Color.TRANSPARENT);
+        editButton.setSize(FloatingActionButton.SIZE_MINI);
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,14 +201,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton removeButton = new ImageButton(this);
+        FloatingActionButton removeButton = new FloatingActionButton(this);
         RelativeLayout.LayoutParams paramsDeleteButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        paramsDeleteButton.addRule(RelativeLayout.RIGHT_OF, imageView.getId());
         paramsDeleteButton.addRule(RelativeLayout.BELOW, editButton.getId());
+        paramsDeleteButton.addRule(RelativeLayout.ALIGN_START, editButton.getId());
         removeButton.setLayoutParams(paramsDeleteButton);
         imageLayout.addView(removeButton);
-        removeButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
-        removeButton.setBackgroundColor(Color.TRANSPARENT);
+        removeButton.setImageResource(android.R.drawable.ic_menu_delete);
+        removeButton.setSize(FloatingActionButton.SIZE_MINI);
 
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
