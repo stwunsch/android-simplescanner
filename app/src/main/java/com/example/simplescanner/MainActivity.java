@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_about) {
             Log.d(getClass().getSimpleName(), "Clicked in action bar on about");
+            Intent aboutIntent = new Intent(this, AboutActivity.class);
+            startActivity(aboutIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -134,6 +136,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(getClass().getSimpleName(), "Clicked button to save document");
+                LinearLayout gallery = findViewById(R.id.gallery);
+                if (gallery.getChildCount() == 0) {
+                    Toast.makeText(MainActivity.this, "Nothing to save", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 try {
                     dispatchSaveDocumentIntent();
                 }
