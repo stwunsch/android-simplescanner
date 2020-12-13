@@ -9,7 +9,7 @@
             android:dialogTitle="Set page width"
             android:dialogMessage="Size in millimeter (mm)"
             android:defaultValue="210"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
             android:key="page_height"
@@ -19,7 +19,7 @@
             android:dialogTitle="Set page width"
             android:dialogMessage="Size in millimeter (mm)"
             android:defaultValue="297"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
 
         <ListPreference
             app:defaultValue="fit_height"

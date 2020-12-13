@@ -251,8 +251,8 @@ public class MainActivity extends AppCompatActivity {
         if (pageWidthStr == null || pageHeightStr == null) {
             throw new InvalidPreferencesFormatException("Failed to read preferences page_width and page_height");
         }
-        int pageWidth = Integer.parseInt(pageWidthStr);
-        int pageHeight = Integer.parseInt(pageHeightStr);
+        int pageWidth = Integer.parseInt(pageWidthStr.trim());
+        int pageHeight = Integer.parseInt(pageHeightStr.trim());
         Log.d(getClass().getSimpleName(), "Load page size from prefs " + pageWidth + ", " + pageHeight);
         if (pageWidth <= 0 || pageHeight <= 0) {
             throw new InvalidPreferencesFormatException("Invalid number for preference page_width or page_height");
