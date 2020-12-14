@@ -37,7 +37,7 @@
             android:persistent="true"
             android:dialogTitle="Set JPEG image compression factor"
             android:dialogMessage="Value between 0 and 1"
-            android:defaultValue="0.9"
+            android:defaultValue="0.8"
             app:useSimpleSummaryProvider="true" />
 
 </PreferenceScreen>
