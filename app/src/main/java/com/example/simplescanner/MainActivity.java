@@ -264,8 +264,8 @@ public class MainActivity extends AppCompatActivity {
         if (pageWidth <= 0 || pageHeight <= 0) {
             throw new InvalidPreferencesFormatException("Invalid number for preference page_width or page_height");
         }
-        float pageWidthInch = pageWidth / INCH_PER_MM / 72.f;
-        float pageHeightInch = pageHeight / INCH_PER_MM / 72.f;
+        float pageWidthInch = Math.round(pageWidth / INCH_PER_MM / 72.f);
+        float pageHeightInch = Math.round(pageHeight / INCH_PER_MM / 72.f);
 
         String pageResizeMode = prefs.getString("page_resize_mode", null);
         if (pageResizeMode == null) {
@@ -293,10 +293,10 @@ public class MainActivity extends AppCompatActivity {
             float pageHeightFinal = pageHeightInch;
             if (pageResizeMode.equals("fit_width")) {
                 Log.d(getClass().getSimpleName(), "Resize page width to content");
-                pageWidthFinal = pageHeightInch * imageWidth / imageHeight;
+                pageWidthFinal = Math.round(pageHeightInch * imageWidth / imageHeight);
             } else if (pageResizeMode.equals("fit_height")) {
                 Log.d(getClass().getSimpleName(), "Resize page height to content");
-                pageHeightFinal = pageWidthInch * imageHeight / imageWidth;
+                pageHeightFinal = Math.round(pageWidthInch * imageHeight / imageWidth);
             } else {
                 Log.d(getClass().getSimpleName(), "Resize content to page");
             }
