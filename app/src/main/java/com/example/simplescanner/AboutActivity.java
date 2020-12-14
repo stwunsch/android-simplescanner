@@ -39,7 +39,7 @@ public class AboutActivity extends AppCompatActivity {
 
         text += "<br/>";
         text += "<b>PDFBox Android</b> PDF processing library<br/>";
-        text += "<b>Website</b> github.com/TomRoush/PdfBox-Android/<br/>";
+        text += "<b>Website</b> github.com/TomRoush/PdfBox-Android<br/>";
         text += "<b>License</b> Apache v2.0<br/>";
 
         textAbout.setText(Html.fromHtml(text));
