@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">Simple Scanner</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="about">TODO: Add used packages</string>
 </resources>
