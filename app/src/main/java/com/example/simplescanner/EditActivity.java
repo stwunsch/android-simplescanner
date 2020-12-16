@@ -75,5 +75,37 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Button buttonGrayscale = findViewById(R.id.buttonGrayscale);
+        buttonGrayscale.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                editedImage = Utils.getGrayscaledImage(editedImage);
+                previewView.setImageBitmap(editedImage);
+            }
+        });
+
+        Button buttonSharpen = findViewById(R.id.buttonSharpen);
+        buttonSharpen.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                try {
+                    editedImage = Utils.getSharpenedImage(editedImage);
+                } catch (Exception e) {
+                    Log.d(getClass().getSimpleName(), "Failed to sharpen photo: " + e.getMessage());
+                    Toast.makeText(EditActivity.this, "Failed to sharpen image", Toast.LENGTH_LONG).show();
+                }
+                previewView.setImageBitmap(editedImage);
+            }
+        });
+
+        Button buttonThreshold = findViewById(R.id.buttonThreshold);
+        buttonThreshold.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                editedImage = Utils.getThresholdedImage(editedImage);
+                previewView.setImageBitmap(editedImage);
+            }
+        });
     }
 }

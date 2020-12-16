@@ -29,7 +29,46 @@
             android:id="@+id/buttonView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/buttonView2"
+            android:layout_marginTop="@dimen/edit_button_margin"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonGrayscale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_button_margin"
+                android:layout_marginRight="@dimen/edit_button_margin"
+                android:layout_weight="1"
+                android:text="Gray\nScale" />
+
+            <Button
+                android:id="@+id/buttonSharpen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_button_margin"
+                android:layout_marginRight="@dimen/edit_button_margin"
+                android:layout_weight="1"
+                android:text="Sharpen\nEdges" />
+
+            <Button
+                android:id="@+id/buttonThreshold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edit_button_margin"
+                android:layout_marginRight="@dimen/edit_button_margin"
+                android:layout_weight="1"
+                android:text="Filter\nText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/buttonView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/edit_button_margin"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal">
 
@@ -37,7 +76,8 @@
                 android:id="@+id/buttonCrop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/edit_button_margin"
+                android:layout_marginLeft="@dimen/edit_button_margin"
+                android:layout_marginRight="@dimen/edit_button_margin"
                 android:layout_weight="1"
                 android:text="Crop" />
 
@@ -45,7 +85,8 @@
                 android:id="@+id/buttonReset"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/edit_button_margin"
+                android:layout_marginLeft="@dimen/edit_button_margin"
+                android:layout_marginRight="@dimen/edit_button_margin"
                 android:layout_weight="1"
                 android:text="Reset" />
 
@@ -53,10 +94,10 @@
                 android:id="@+id/buttonSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/edit_button_margin"
+                android:layout_marginLeft="@dimen/edit_button_margin"
+                android:layout_marginRight="@dimen/edit_button_margin"
                 android:layout_weight="1"
                 android:text="Save" />
-
         </LinearLayout>
     </RelativeLayout>
 

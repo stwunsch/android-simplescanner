@@ -15,7 +15,11 @@ import java.util.Date;
 import java.util.List;
 
 import boofcv.alg.distort.RemovePerspectiveDistortion;
+import boofcv.alg.enhance.EnhanceImageOps;
+import boofcv.alg.filter.binary.GThresholdImageOps;
+import boofcv.alg.misc.PixelMath;
 import boofcv.android.ConvertBitmap;
+import boofcv.struct.ConfigLength;
 import boofcv.struct.image.GrayU8;
 import boofcv.struct.image.ImageType;
 import boofcv.struct.image.Planar;
@@ -31,6 +35,34 @@ public class Utils {
     static public Bitmap getImage(String filepath) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         return BitmapFactory.decodeFile(filepath, bmOptions);
+    }
+
+    static public Bitmap getGrayscaledImage(Bitmap image) {
+        GrayU8 color = ConvertBitmap.bitmapToGray(image, (GrayU8) null,null);
+        return ConvertBitmap.grayToBitmap(color, image.getConfig());
+    }
+
+    static public Bitmap getThresholdedImage(Bitmap image) {
+        GrayU8 color = ConvertBitmap.bitmapToGray(image, (GrayU8) null,null);
+        GrayU8 transformed = color.createSameShape();
+        GThresholdImageOps.localSauvola(color, transformed,  ConfigLength.fixed(15), 0.30f, false);
+        PixelMath.multiply(transformed, 255, transformed);
+        return ConvertBitmap.grayToBitmap(transformed, image.getConfig());
+    }
+
+    static public Bitmap getSharpenedImage(Bitmap image) throws Exception {
+        Planar<GrayU8> color = ConvertBitmap.bitmapToPlanar(image, null, GrayU8.class, null);
+        if (color.getNumBands() != 3) {
+            throw new Exception("Image does not have three color channels");
+        }
+        Planar<GrayU8> adjusted = color.createSameShape();
+        for (int i = 0; i < 3; i++) {
+            // TODO: Make sharpen configurable between sharpen4 and sharpen8
+            EnhanceImageOps.sharpen4(color.getBand(i), adjusted.getBand(i));
+        }
+        Bitmap editedImage = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig());
+        ConvertBitmap.planarToBitmap(adjusted, editedImage, null);
+        return editedImage;
     }
 
     static public Bitmap getScaledImage(String filepath, DisplayMetrics display) {
