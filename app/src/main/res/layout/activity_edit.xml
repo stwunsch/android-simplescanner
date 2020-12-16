@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +14,7 @@
             android:id="@+id/imageLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/buttonView"
+            android:layout_above="@+id/buttonLayout"
             android:layout_alignParentTop="true"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal">
@@ -25,14 +26,18 @@
                 android:scaleType="fitXY" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/buttonView"
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/buttonLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/buttonView2"
+            android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/edit_button_margin"
-            android:gravity="center_horizontal|center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginBottom="@dimen/edit_button_margin"
+            android:layout_marginLeft="@dimen/edit_button_margin"
+            android:layout_marginRight="@dimen/edit_button_margin"
+            android:layout_centerHorizontal="true"
+            app:columnCount="3"
+            app:rowCount="2">
 
             <Button
                 android:id="@+id/buttonGrayscale"
@@ -40,8 +45,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/edit_button_margin"
                 android:layout_marginRight="@dimen/edit_button_margin"
-                android:layout_weight="1"
-                android:text="Gray\nScale" />
+                android:text="Gray\nScale"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1" />
 
             <Button
                 android:id="@+id/buttonSharpen"
@@ -49,7 +55,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/edit_button_margin"
                 android:layout_marginRight="@dimen/edit_button_margin"
-                android:layout_weight="1"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
                 android:text="Sharpen\nEdges" />
 
             <Button
@@ -58,19 +65,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/edit_button_margin"
                 android:layout_marginRight="@dimen/edit_button_margin"
-                android:layout_weight="1"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
                 android:text="Filter\nText" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/buttonView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/edit_button_margin"
-            android:gravity="center_horizontal|center_vertical"
-            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/buttonCrop"
@@ -78,8 +75,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/edit_button_margin"
                 android:layout_marginRight="@dimen/edit_button_margin"
-                android:layout_weight="1"
-                android:text="Crop" />
+                android:text="Crop"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1" />
 
             <Button
                 android:id="@+id/buttonReset"
@@ -87,8 +85,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/edit_button_margin"
                 android:layout_marginRight="@dimen/edit_button_margin"
-                android:layout_weight="1"
-                android:text="Reset" />
+                android:text="Reset"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1" />
 
             <Button
                 android:id="@+id/buttonSave"
@@ -96,9 +95,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/edit_button_margin"
                 android:layout_marginRight="@dimen/edit_button_margin"
-                android:layout_weight="1"
+                app:layout_columnWeight="1"
+                app:layout_rowWeight="1"
                 android:text="Save" />
-        </LinearLayout>
+
+        </androidx.gridlayout.widget.GridLayout>
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
