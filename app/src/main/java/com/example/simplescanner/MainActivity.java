@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         photoDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        Utils.clearDirectory(photoDirectory);
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
 
         FloatingActionButton fabCamera = findViewById(R.id.fabCamera);
