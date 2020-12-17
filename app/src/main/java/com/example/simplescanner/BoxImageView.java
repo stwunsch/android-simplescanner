@@ -17,6 +17,7 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
     private Point topRight;
     private Point bottomLeft;
     private Point bottomRight;
+    private Point touchOffset;
     private List<Point> points;
     private int canvasWidth;
     private int canvasHeight;
@@ -46,6 +47,7 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
         topRight = new Point();
         bottomLeft = new Point();
         bottomRight = new Point();
+        touchOffset = new Point();
 
         points = new LinkedList<Point>();
         points.add(topLeft);
@@ -75,6 +77,7 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         Log.d("BoxImageView", "Draw canvas");
+
         if (!boxIsInitialized) {
             canvasWidth = getWidth();
             canvasHeight = getHeight();
@@ -83,8 +86,10 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
             topRight.set(canvasWidth - drawOffset, drawOffset);
             bottomLeft.set(drawOffset, canvasHeight - drawOffset);
             bottomRight.set(canvasWidth - drawOffset, canvasHeight - drawOffset);
+            touchOffset.set(0, 0);
             boxIsInitialized = true;
         }
+
         canvas.drawLine(topLeft.x, topLeft.y, topRight.x, topRight.y, paintLine);
         canvas.drawLine(topRight.x, topRight.y, bottomRight.x, bottomRight.y, paintLine);
         canvas.drawLine(bottomRight.x, bottomRight.y, bottomLeft.x, bottomLeft.y, paintLine);
@@ -92,11 +97,13 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
     }
 
     private void updateClosestPoint(double x, double y) {
-        if (x < 0) x = 0;
-        else if (x > canvasWidth) x = canvasWidth;
-        if (y < 0) y = 0;
-        else if (y > canvasHeight) y = canvasHeight;
-        points.get(closestPoint).set((int) x, (int) y);
+        int newX = (int) x - touchOffset.x;
+        int newY = (int) y - touchOffset.y;
+        newX = Math.max(newX, 0);
+        newX = Math.min(newX, canvasWidth);
+        newY = Math.max(newY, 0);
+        newY = Math.min(newY, canvasHeight);
+        points.get(closestPoint).set(newX, newY);
         invalidate();
     }
 
@@ -112,6 +119,8 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
                 closestPoint = j;
             }
         }
+        Point p = points.get(closestPoint);
+        touchOffset.set((int) x - p.x, (int) y - p.y);
     }
 
     @Override
@@ -131,6 +140,7 @@ public class BoxImageView extends androidx.appcompat.widget.AppCompatImageView {
         } else if (action == MotionEvent.ACTION_UP) {
             Log.d(getClass().getSimpleName(), "Released touch at " + x + ", " + y);
             closestPoint = -1;
+            touchOffset.set(0, 0);
         }
         return true;
     }
