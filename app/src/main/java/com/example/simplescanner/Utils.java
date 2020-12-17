@@ -2,6 +2,7 @@ package com.example.simplescanner;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -26,6 +27,14 @@ import boofcv.struct.image.Planar;
 import georegression.struct.point.Point2D_F64;
 
 public class Utils {
+    static public void rotateImage(String filepath) throws IOException {
+        Bitmap image = getImage(filepath);
+        Matrix matrix = new Matrix();
+        matrix.postRotate(-90);
+        Bitmap editedImage = Bitmap.createBitmap(image, 0, 0, image.getWidth(), image.getHeight(), matrix, true);
+        writeImage(editedImage, filepath);
+    }
+
     static public File createImageFile(File directory) throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "SimpleScanner_" + timeStamp + "_";

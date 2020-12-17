@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
     private File photoDirectory;
     private String currentPhotoPath;
-    private int nextViewId;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         photoDirectory = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        nextViewId = 1000;
         PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
 
         FloatingActionButton fabCamera = findViewById(R.id.fabCamera);
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         imageLayout.addView(photoPath);
 
         ImageView imageView = new ImageView(this);
-        imageView.setId(nextViewId++);
+        imageView.setId(View.generateViewId());
         RelativeLayout.LayoutParams paramsImageView = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         paramsImageView.addRule(RelativeLayout.CENTER_HORIZONTAL);
         imageView.setLayoutParams(paramsImageView);
@@ -186,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
         imageLayout.addView(imageView);
 
         ImageButton editButton = new ImageButton(this);
-        editButton.setId(nextViewId++);
+        editButton.setId(View.generateViewId());
         RelativeLayout.LayoutParams paramsEditButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         paramsEditButton.rightMargin = (int) getResources().getDimension(R.dimen.image_button_margin);
         paramsEditButton.topMargin = paramsEditButton.rightMargin;
@@ -210,10 +208,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ImageButton rotateButton = new ImageButton(this);
+        rotateButton.setId(View.generateViewId());
+        RelativeLayout.LayoutParams paramsRotateButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        paramsRotateButton.addRule(RelativeLayout.BELOW, editButton.getId());
+        paramsRotateButton.addRule(RelativeLayout.ALIGN_START, editButton.getId());
+        paramsRotateButton.height = paramsEditButton.height;
+        paramsRotateButton.width = paramsRotateButton.height;
+        paramsRotateButton.bottomMargin = paramsEditButton.rightMargin;
+        rotateButton.setLayoutParams(paramsRotateButton);
+        imageLayout.addView(rotateButton);
+        rotateButton.setImageResource(R.drawable.ic_action_rotate);
+        rotateButton.setBackground(getResources().getDrawable(R.drawable.button_background));
+
+        rotateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String thisPhoto = photoPath.getText().toString();
+                Log.d(getClass().getSimpleName(), "Rotate in gallery the image " + thisPhoto);
+                try {
+                    Utils.rotateImage(thisPhoto);
+                } catch (IOException e) {
+                    Log.d(getClass().getSimpleName(), "Failed to rotate image: " + e.getMessage());
+                    Toast.makeText(MainActivity.this, "Failed to rotate image", Toast.LENGTH_LONG).show();
+                }
+                updateGallery(thisPhoto);
+            }
+        });
+
         ImageButton deleteButton = new ImageButton(this);
         RelativeLayout.LayoutParams paramsDeleteButton = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        paramsDeleteButton.addRule(RelativeLayout.BELOW, editButton.getId());
-        paramsDeleteButton.addRule(RelativeLayout.ALIGN_START, editButton.getId());
+        paramsDeleteButton.addRule(RelativeLayout.BELOW, rotateButton.getId());
+        paramsDeleteButton.addRule(RelativeLayout.ALIGN_START, rotateButton.getId());
         paramsDeleteButton.height = paramsEditButton.height;
         paramsDeleteButton.width = paramsDeleteButton.height;
         deleteButton.setLayoutParams(paramsDeleteButton);
@@ -224,7 +250,8 @@ public class MainActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(getClass().getSimpleName(), "Remove from gallery the image " + currentPhotoPath);
+                String thisPhoto = photoPath.getText().toString();
+                Log.d(getClass().getSimpleName(), "Remove from gallery the image " + thisPhoto);
                 imageLayout.removeAllViews();
                 gallery.removeView(imageLayout);
             }
