@@ -27,6 +27,16 @@ import boofcv.struct.image.Planar;
 import georegression.struct.point.Point2D_F64;
 
 public class Utils {
+
+    static public void clearDirectory(File directory) {
+        File[] files = directory.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            String filename = files[i].getName();
+            Log.d("Utils.clearDirectory", "Remove file " + filename);
+            files[i].delete();
+        }
+    }
+
     static public void rotateImage(String filepath) throws IOException {
         Bitmap image = getImage(filepath);
         Matrix matrix = new Matrix();
@@ -38,7 +48,8 @@ public class Utils {
     static public File createImageFile(File directory) throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "SimpleScanner_" + timeStamp + "_";
-        return File.createTempFile(imageFileName,".jpg", directory);
+        File file = File.createTempFile(imageFileName,".jpg", directory);
+        return file;
     }
 
     static public Bitmap getImage(String filepath) {
