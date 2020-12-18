@@ -2,7 +2,7 @@
 
 You've found a project of mine to learn Android development in Java! The app is fully functional, see below, but the code has serious design flaws because it does not correctly respect the [activity lifecycle](https://developer.android.com/guide/components/activities/activity-lifecycle).
 
-![](screeshots.png)
+![](screenshots.png)
 
 ### Dependencies
 
